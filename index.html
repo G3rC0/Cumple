@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>¡Feliz Cumpleaños!</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
+        
+        <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" type="img/png">
+
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    </head>
+    <body>
+        
+        <header class="birthday-header">
+            <h1 class="birthday-title">🎉 ¡Feliz Cumpleaños! 🎂</h1>
+            <p class="birthday-subtitle">Una sorpresa especial te espera...</p>
+        </header>
+
+        <nav class="navbar">
+            <div class="navbar-brand">🎈 Pa' Geraldine</div>
+            <ul class="nav-links">
+                <li><a href="./pags/inicio.html" class="link" data-page="inicio">Inicio</a></li>
+                <li><a href="./pags/servicio.html" class="link">Regalo 🎁</a></li>
+                <li><a href="./pags/acerca.html" class="link">Video </a></li>
+                <li><a href="./pags/contacto.html" class="link">Misterio </a></li>
+            </ul>
+            <form id="searchForm" class="search-form">
+                <input type="text" id="searchInput" placeholder="Busca tu sorpresa..." />
+                <button type="submit">🎉 Buscar</button>
+            </form>
+        </nav>
+
+        <main id="mainContent" class="content">
+            <div class="welcome-message">
+                <button id="confettiButton" class="confetti-btn">¡Lanzar Confeti! 🎊</button>
+            </div>
+        </main>
+
+        <script>
+            function launchConfetti() {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff6f61', '#6f42c1', '#ffc107', '#1e90ff']
+                });
+            }
+            window.addEventListener("DOMContentLoaded", () => {
+                launchConfetti();
+                loadPage("./pags/inicio.html");
+            });
+
+            const confettiButton = document.getElementById("confettiButton");
+            confettiButton.addEventListener("click", launchConfetti);
+
+            const form = document.getElementById("searchForm");
+            const input = document.getElementById("searchInput");
+            const content = document.getElementById("mainContent");
+            const links = document.querySelectorAll("a.link");
+
+            function loadPage(url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw new Error("No se pudo cargar el contenido.");
+                        return response.text();
+                    })
+                    .then(html => {
+                        content.innerHTML = html;
+                    })
+                    .catch(() => {
+                        content.innerHTML = "<p>Error al cargar el contenido.</p>";
+                    });
+            }
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const value = input.value.trim().toLowerCase();
+
+                if (value === "ninel") {
+                    content.innerHTML = `
+                        <h1 class="main-title">🎈 Felicidades, este es tu regalo oculto :D 🎉</h1>
+                        <img src="./images/flor.jpg" alt="Imagen de Ninel" class="result-img" />
+                        <br><br>
+                        <img src="./images/flor2.jpg" alt="Imagen de Ninel" class="result-img2" />
+                        <br><br>
+                        <button class="reclaim-btn" onclick="launchConfetti()">Reclámalo en persona, solo las flores, no el mapache</button>
+                    `;
+                    launchConfetti(); 
+                } else {
+                    content.innerHTML = `<h1 class="main-title">No se encontraron resultados para: "${value}"</h1>`;
+                }
+            });
+
+            links.forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const url = link.getAttribute("href");
+                    loadPage(url);
+                });
+            });
+        </script>
+    </body>
+</html>
